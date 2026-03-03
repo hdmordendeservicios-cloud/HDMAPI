@@ -71,7 +71,7 @@
 
             <div id="mainMenu" class="hidden animate-fade-in">
                 
-                <div class="bg-slate-50 rounded-xl border border-slate-100 overflow-hidden flex mb-4 shadow-sm">
+                <div class="bg-slate-50 rounded-xl border border-slate-100 overflow-hidden flex mb-5 shadow-sm">
                     <div class="w-1.5 bg-[#005B9A]"></div>
                     <div class="p-3 flex-1">
                         <p class="text-[10px] uppercase tracking-wider text-[#005B9A] font-bold mb-0.5">USUARIO:</p>
@@ -84,13 +84,27 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-3 mb-5">
-                    <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl text-center shadow-inner flex flex-col justify-center">
-                        <p class="text-[9px] uppercase font-bold text-blue-600 mb-1">Folio</p>
-                        <p id="folioDisp" class="text-sm font-extrabold text-blue-800">No generado</p>
+                    
+                    <div class="flex flex-col gap-3">
+                        <button onclick="openFolios()" class="flex flex-col items-center p-4 bg-white rounded-2xl shadow-sm border border-slate-100 hover:bg-slate-50 transition-all active:scale-95 text-center">
+                            <div class="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center mb-2 text-white"><span class="material-symbols-outlined text-xl">list_alt</span></div>
+                            <p class="text-[11px] font-bold text-slate-800 leading-tight">Folios Ingresados</p>
+                        </button>
+                        <div class="bg-blue-50 border border-blue-100 p-3 rounded-xl text-center shadow-inner flex flex-col justify-center flex-1">
+                            <p class="text-[9px] uppercase font-bold text-blue-600 mb-1">Folio Generado</p>
+                            <p id="folioDisp" class="text-sm font-extrabold text-blue-800">No generado</p>
+                        </div>
                     </div>
-                    <div class="bg-emerald-50 border border-emerald-100 p-3 rounded-xl text-center shadow-inner flex flex-col justify-center">
-                        <p class="text-[9px] uppercase font-bold text-emerald-600 mb-1">Sucursal</p>
-                        <p id="resBranch" class="text-xs font-bold text-emerald-800 leading-tight">Sin escanear</p>
+
+                    <div class="flex flex-col gap-3">
+                        <button onclick="goTo('RegistroQR')" class="flex flex-col items-center p-4 bg-white rounded-2xl shadow-sm border border-slate-100 hover:bg-slate-50 transition-all active:scale-95 text-center">
+                            <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center mb-2 text-white"><span class="material-symbols-outlined text-xl">qr_code_scanner</span></div>
+                            <p class="text-[11px] font-bold text-slate-800 leading-tight">Registro Por QR</p>
+                        </button>
+                        <div class="bg-emerald-50 border border-emerald-100 p-3 rounded-xl text-center shadow-inner flex flex-col justify-center flex-1">
+                            <p class="text-[9px] uppercase font-bold text-emerald-600 mb-1">Sucursal Detectada</p>
+                            <p id="resBranch" class="text-[11px] font-bold text-emerald-800 leading-tight">Sin escanear</p>
+                        </div>
                     </div>
                 </div>
 
@@ -104,16 +118,6 @@
 
                 <div class="grid grid-cols-2 gap-3">
                     
-                    <button onclick="openFolios()" class="flex flex-col items-center p-4 bg-white rounded-2xl shadow-sm border border-slate-100 hover:bg-slate-50 transition-all active:scale-95 text-center">
-                        <div class="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center mb-2 text-white"><span class="material-symbols-outlined text-xl">list_alt</span></div>
-                        <p class="text-[11px] font-bold text-slate-800 leading-tight">Folios Ingresados</p>
-                    </button>
-
-                    <button onclick="goTo('RegistroQR')" class="flex flex-col items-center p-4 bg-white rounded-2xl shadow-sm border border-slate-100 hover:bg-slate-50 transition-all active:scale-95 text-center">
-                        <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center mb-2 text-white"><span class="material-symbols-outlined text-xl">qr_code_scanner</span></div>
-                        <p class="text-[11px] font-bold text-slate-800 leading-tight">Registro Por QR</p>
-                    </button>
-
                     <button id="btnGenerarFolio" onclick="generarFolioManual()" class="flex flex-col items-center p-4 bg-white rounded-2xl shadow-sm border border-slate-100 hover:bg-slate-50 transition-all active:scale-95 text-center">
                         <div class="w-10 h-10 rounded-xl bg-slate-700 flex items-center justify-center mb-2 text-white"><span class="material-symbols-outlined text-xl">note_add</span></div>
                         <p class="text-[11px] font-bold text-slate-800 leading-tight">Generar Folio</p>
@@ -144,8 +148,12 @@
                         <p class="text-[11px] font-bold text-slate-800 leading-tight">Reporte Visita</p>
                     </button>
                 </div>
+
+                <button onclick="cerrarSesion()" class="w-full mt-5 py-3.5 bg-red-600 text-white text-sm font-bold rounded-xl shadow-md hover:bg-red-700 transition-all active:scale-[0.98] flex items-center justify-center">
+                    <span class="material-symbols-outlined mr-2 text-lg">logout</span> CERRAR SESIÓN
+                </button>
+
             </div>
-            
         </div>
     </div>
     
@@ -172,7 +180,7 @@
         let html5QrCode;
         let globalFolio = "";
         let globalBranch = "";
-        let globalUserName = ""; // Guarda el nombre para generar folio
+        let globalUserName = ""; 
 
         const URL_MAP = {
             'ServicioCorrectivo': 'https://docs.google.com/forms/d/e/1FAIpQLSexALVRaCItCODgce3_1U-sfRaMAQq365o57xIJvikpNMc40A/viewform?usp=pp_url&entry.833549862=COEM-',
@@ -216,11 +224,9 @@
             btn.disabled = true;
             btn.classList.add('opacity-75', 'cursor-not-allowed');
 
-            // Hace la consulta al servidor ANTES de dejarte entrar
             const res = await apiCall('getEmployeeData', { username: u, password: p });
 
             if (res.status === 'success' && res.esValido) {
-                // Credenciales correctas: Ahora sí te deja entrar
                 globalUserName = res.name;
                 document.getElementById('resName').innerText = res.name;
                 document.getElementById('resPos').innerText = res.position;
@@ -228,7 +234,6 @@
                 document.getElementById('loginForm').style.display = 'none';
                 document.getElementById('mainMenu').classList.remove('hidden');
             } else {
-                // Credenciales incorrectas
                 alertMsg.innerText = "Usuario o contraseña incorrectos.";
                 alertMsg.classList.remove('hidden');
                 btn.innerText = 'INICIAR SESIÓN';
@@ -238,10 +243,21 @@
         });
 
         // =======================================
-        // 2. GENERAR FOLIO MANUAL (Botón 3)
+        // 2. CERRAR SESIÓN
+        // =======================================
+        function cerrarSesion() {
+            if (html5QrCode && html5QrCode.isScanning) {
+                html5QrCode.stop().catch(e => console.log(e));
+            }
+            // Recargar la página limpia todo el historial y las variables por seguridad
+            window.location.reload(); 
+        }
+
+        // =======================================
+        // 3. GENERAR FOLIO MANUAL (Botón)
         // =======================================
         async function generarFolioManual() {
-            if (globalFolio !== "") return; // Si ya generó uno, no genera otro
+            if (globalFolio !== "") return; 
 
             const folioUI = document.getElementById('folioDisp');
             folioUI.innerText = "Creando...";
@@ -255,7 +271,6 @@
                 folioUI.innerText = globalFolio;
                 document.getElementById('btnGenerarFolio').classList.add('opacity-50', 'bg-slate-100');
                 
-                // Si ya había escaneado una sucursal antes, lo vincula en BD
                 if (globalBranch !== "") {
                     apiCall('updateFolioBranch', { folio: globalFolio, branchName: globalBranch });
                 }
@@ -265,7 +280,7 @@
         }
 
         // =======================================
-        // 3. CÁMARA MANUAL (Botón 4)
+        // 4. CÁMARA MANUAL (Botón)
         // =======================================
         function activarCamara() {
             document.getElementById('cameraSection').classList.remove('hidden');
@@ -287,7 +302,7 @@
 
         async function onScanSuccess(decodedText) {
             document.getElementById('resBranch').innerHTML = '<span class="text-emerald-500 animate-pulse">Buscando...</span>';
-            cerrarCamara(); // Cierra la cámara para despejar la pantalla
+            cerrarCamara(); 
             
             const r = await apiCall('getBranchFromCatalog', { qrContent: decodedText });
             
@@ -295,7 +310,6 @@
                 globalBranch = r.branchName;
                 document.getElementById('resBranch').innerText = globalBranch;
                 
-                // Si ya había generado un folio antes, lo vincula en BD
                 if (globalFolio !== "") {
                     apiCall('updateFolioBranch', { folio: globalFolio, branchName: globalBranch });
                 }
@@ -305,7 +319,7 @@
         }
 
         // =======================================
-        // 4. OTROS BOTONES
+        // 5. OTROS BOTONES
         // =======================================
         async function openFolios() {
             document.getElementById('modalFolios').classList.replace('hidden', 'flex');
