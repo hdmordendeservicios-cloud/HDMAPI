@@ -4,10 +4,12 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
     <title>Portal Operativo - HDM</title>
+    
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -26,11 +28,20 @@
             },
         };
     </script>
+
     <style>
-        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0084CA 0%, #005B9A 100%); background-attachment: fixed; }
-        #reader video { object-fit: cover; border-radius: 0.75rem; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #0084CA 0%, #005B9A 100%); 
+            background-attachment: fixed; 
+        }
+        #reader video { 
+            object-fit: cover; 
+            border-radius: 0.75rem; 
+        }
     </style>
 </head>
+
 <body class="min-h-screen flex flex-col items-center justify-center p-4 antialiased">
     
     <div class="w-full max-w-[420px] bg-surface rounded-2xl shadow-premium border border-slate-100 overflow-hidden relative">
@@ -64,9 +75,15 @@
 
                 <div id="alertMessage" class="hidden py-2.5 px-3 bg-red-50 border border-red-200 text-red-600 text-[13px] font-medium rounded-lg text-center transition-all"></div>
                 
-                <button id="submitBtn" class="w-full flex justify-center items-center py-3.5 px-4 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary-dark shadow-md transition-all active:scale-[0.98]" type="submit">
-                    INICIAR SESIÓN
-                </button>
+                <div class="space-y-3 pt-2">
+                    <button id="submitBtn" class="w-full flex justify-center items-center py-3.5 px-4 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary-dark shadow-md transition-all active:scale-[0.98]" type="submit">
+                        INICIAR SESIÓN
+                    </button>
+                    
+                    <button type="button" onclick="window.top.location.href='https://script.google.com/macros/s/AKfycbw7Qh7UbMfHqkFTR6L7apF5StJ1bR-UjSQnyiuaQtXIp0wZG8T1fS8HSECfr7BG6Ovz/exec'" class="w-full flex justify-center items-center py-3.5 px-4 rounded-lg text-sm font-semibold text-white bg-red-600 hover:bg-red-700 shadow-md transition-all active:scale-[0.98]">
+                        EVALUACIÓN DE UN TRABAJO
+                    </button>
+                </div>
             </form>
 
             <div id="mainMenu" class="hidden animate-fade-in">
@@ -117,7 +134,6 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
-                    
                     <button id="btnGenerarFolio" onclick="generarFolioManual()" class="flex flex-col items-center p-4 bg-white rounded-2xl shadow-sm border border-slate-100 hover:bg-slate-50 transition-all active:scale-95 text-center">
                         <div class="w-10 h-10 rounded-xl bg-slate-700 flex items-center justify-center mb-2 text-white"><span class="material-symbols-outlined text-xl">note_add</span></div>
                         <p class="text-[11px] font-bold text-slate-800 leading-tight">Generar Folio</p>
@@ -172,10 +188,8 @@
     </div>
 
     <script>
-        // ======================================================================
-        // 🔴🔴 PEGA AQUÍ TU ENLACE DE GOOGLE APPS SCRIPT (Termina en /exec)
-        // ======================================================================
-        const API_URL = "https://script.google.com/macros/s/AKfycbxc3xJLxmUVn6aQlWsqaP8j8rN2rK6H2LJwBPSjxnvZ6BG0M7pksXkp9LxU9QSxJg2M8g/exec";
+        // 🔴🔴 PEGA AQUÍ TU ENLACE DE GOOGLE APPS SCRIPT 🔴🔴
+        const API_URL = "https://script.google.com/macros/s/TU_CODIGO_AQUI/exec";
 
         let html5QrCode;
         let globalFolio = "";
@@ -190,7 +204,6 @@
             'RegistroQR': 'https://script.google.com/macros/s/AKfycbyluaEUFg_UrHy2MyNqZptclbYCwMSbUzDYezty39Th0t9tdby4vQ3b7CouyLVK4s9tDQ/exec'
         };
 
-        // Función API universal
         async function apiCall(action, params = {}) {
             try {
                 const response = await fetch(API_URL, {
@@ -209,9 +222,6 @@
             else { p.type = 'password'; i.textContent = 'visibility_off'; }
         }
 
-        // =======================================
-        // 1. LOGIN ESTRICTO (Verifica primero)
-        // =======================================
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
@@ -242,20 +252,13 @@
             }
         });
 
-        // =======================================
-        // 2. CERRAR SESIÓN
-        // =======================================
         function cerrarSesion() {
             if (html5QrCode && html5QrCode.isScanning) {
                 html5QrCode.stop().catch(e => console.log(e));
             }
-            // Recargar la página limpia todo el historial y las variables por seguridad
             window.location.reload(); 
         }
 
-        // =======================================
-        // 3. GENERAR FOLIO MANUAL (Botón)
-        // =======================================
         async function generarFolioManual() {
             if (globalFolio !== "") return; 
 
@@ -279,9 +282,6 @@
             }
         }
 
-        // =======================================
-        // 4. CÁMARA MANUAL (Botón)
-        // =======================================
         function activarCamara() {
             document.getElementById('cameraSection').classList.remove('hidden');
             const config = { fps: 10, qrbox: { width: 220, height: 220 } };
@@ -318,9 +318,6 @@
             }
         }
 
-        // =======================================
-        // 5. OTROS BOTONES
-        // =======================================
         async function openFolios() {
             document.getElementById('modalFolios').classList.replace('hidden', 'flex');
             document.getElementById('tableContent').innerHTML = "<p class='mt-10 animate-pulse text-primary font-semibold'>Descargando historial...</p>";
