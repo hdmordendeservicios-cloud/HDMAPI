@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <title>Portal Operativo - HDM</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#005B9A", 
+                        "primary-dark": "#004575",
+                        "surface": "#FFFFFF",
+                        "text-main": "#1E293B",
+                        "text-sub": "#64748B",
+                    },
+                    fontFamily: { sans: ["Inter", "sans-serif"] },
+                    boxShadow: { 'premium': '0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04)' }
+                },
+            },
+        };
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0084CA 0%, #005B9A 100%); background-attachment: fixed; }
+        /* Ajuste de cámara para que no desborde en Tailwind */
+        #reader { width: 100%; border-radius: 0.5rem; overflow: hidden; border: 2px solid #e2e8f0; }
+        #reader video { object-fit: cover; border-radius: 0.5rem; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-8 px-4 antialiased">
+    
+    <div class="w-full max-w-[420px] bg-surface rounded-2xl shadow-premium overflow-hidden">
+        <div class="p-8">
+            <div class="flex flex-col items-center mb-6">
+                <img src="https://i.ibb.co/rCsz6hh/LOGOTIPO.png" alt="Logo HDM" class="mb-4 object-contain h-20"> 
+                <h1 class="text-2xl font-semibold text-text-main tracking-tight">Portal Operativo</h1>
+                <p class="text-[13px] text-text-sub mt-1 text-center">Sistemas de Filtración de Agua SA. de C.V.</p>
+            </div>
+            
+            <div id="loginSection">
+                <form id="loginForm" class="space-y-5">
+                    <div class="space-y-1.5">
+                        <label class="text-[13px] font-medium text-slate-700 ml-0.5">Número de Empleado</label>
+                        <div class="relative flex items-center">
+                            <span class="material-symbols-outlined absolute left-4 text-slate-400 text-xl">badge</span>
+                            <input required id="username" class="block w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-text-main focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Ej. EJBM" type="text" style="text-transform: uppercase;">
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-1.5">
+                        <label class="text-[13px] font-medium text-slate-700 ml-0.5">Contraseña</label>
+                        <div class="relative flex items-center">
+                            <span class="material-symbols-outlined absolute left-4 text-slate-400 text-xl">lock</span>
+                            <input required id="password" class="block w-full pl-12 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-lg text-text-main focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="••••••••" type="password">
+                            <button class="absolute right-4 flex items-center text-slate-400 hover:text-primary transition-colors" onclick="togglePassword()" type="button">
+                                <span class="material-symbols-outlined text-xl" id="toggleIcon">visibility_off</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="alertMessage" class="hidden py-2 px-3 bg-red-50 border border-red-200 text-red-600 text-sm font-medium rounded-lg text-center"></div>
+                    
+                    <button id="submitBtn" class="w-full py-3.5 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary-dark transition-all shadow-md active:scale-95" type="submit">
+                        INICIAR SESIÓN
+                    </button>
+                </form>
+            </div>
+
+            <div id="mainMenu" class="hidden animate-fade-in space-y-5">
+                
+                <div class="bg-slate-50 border-l-4 border-primary p-4 rounded-r-lg shadow-sm">
+                    <p class="text-xs font-bold text-primary tracking-wider mb-1">USUARIO</p>
+                    <p id="resName" class="text-sm font-semibold text-text-main leading-tight">Cargando...</p>
+                    <p id="resPos" class="text-xs font-medium text-slate-500 mt-1">---</p>
+                </div>
+
+                <div class="bg-blue-50 border border-primary p-4 rounded-lg text-center shadow-inner">
+                    <p class="text-xs font-bold text-primary tracking-wider mb-1">FOLIO GENERADO</p>
+                    <p id="folioDisp" class="text-2xl font-extrabold text-primary tracking-widest">Generando...</p>
+                </div>
+
+                <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-lg shadow-sm">
+                    <p class="text-xs font-bold text-emerald-600 tracking-wider mb-1">SUCURSAL DETECTADA</p>
+                    <p id="resBranch" class="text-sm font-bold text-emerald-800">Escaneando...</p>
+                </div>
+
+                <div id="readerWrapper" class="w-full relative shadow-md rounded-lg overflow-hidden">
+                    <div id="reader"></div>
+                </div>
+
+                <div class="space-y-2 mt-4 border-t border-slate-100 pt-4">
+                    <label class="text-[13px] font-semibold text-slate-700">Tipo de Servicio</label>
+                    <div class="relative flex items-center">
+                        <span class="material-symbols-outlined absolute left-4 text-primary text-xl z-10">build</span>
+                        <select id="optionSelect" class="block w-full pl-12 pr-10 py-3 bg-white border border-slate-200 rounded-lg text-sm text-text-main font-medium focus:ring-2 focus:ring-primary focus:border-primary appearance-none cursor-pointer">
+                            <option value="">-- SELECCIONE UNA OPCIÓN --</option>
+                            <option value="ServicioCorrectivo">Orden Correctivo/Emergencia</option>
+                            <option value="ServicioInstalaciones">Orden Instalaciones</option>
+                            <option value="ServicioMantenimiento">Orden Mantenimiento</option>
+                            <option value="ServicioReporteVisita">Reporte de Visita</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-4 text-slate-400 text-xl pointer-events-none">expand_more</span>
+                    </div>
+                </div>
+
+                <button id="btnContinuar" class="w-full py-3.5 mt-2 rounded-lg text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-all opacity-50 cursor-not-allowed" disabled>
+                    CONTINUAR AL FORMULARIO
+                </button>
+                
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-6 text-center">
+        <p class="text-[11px] font-medium uppercase tracking-widest text-white/70 drop-shadow-md">
+            © 2026 HDM MÉXICO. Todos los derechos reservados.
+        </p>
+    </div>
+
+    <script>
+        // ======================================================================
+        // 🔴🔴 PEGA AQUÍ TU NUEVO ENLACE DE GOOGLE APPS SCRIPT (Termina en /exec)
+        // ======================================================================
+        const API_URL = "https://script.google.com/macros/s/AKfycbxuZRXtZTCBE3bK-LX-BHlCZxeI21psb8lGMxPQZwJMujQqtd3T7J6j2tNe4MatWfa-2A/exec";
+
+        let html5QrCode;
+        let globalFolio = "";
+        let isBranchScanned = false;
+        let escaneoBloqueado = false;
+
+        const URL_MAP = {
+            'ServicioCorrectivo': 'https://docs.google.com/forms/d/e/1FAIpQLSexALVRaCItCODgce3_1U-sfRaMAQq365o57xIJvikpNMc40A/viewform?usp=pp_url&entry.833549862=COEM-',
+            'ServicioInstalaciones': 'https://docs.google.com/forms/d/e/1FAIpQLSczsSDydxhwDe6Up62D0dd3R6DZND5wQ1nvgySBAXkNm0fTNA/viewform?usp=pp_url&entry.1407249899=INST-',
+            'ServicioMantenimiento': 'https://docs.google.com/forms/d/e/1FAIpQLSdAWJ86UbY8cWq76Lzv3AJjfgkQp6JyNe7lClGYa9JePJ4jmw/viewform?usp=pp_url&entry.1296392221=MANT-',
+            'ServicioReporteVisita': 'https://docs.google.com/forms/d/e/1FAIpQLSfj6ZjnKHhc3h-HGGj2q7HcRTuYOcLvQnMws8K3998V5hh_cQ/viewform?usp=pp_url&entry.1483243805=RTDV-'
+        };
+
+        // Función puente para comunicarse con el Backend (Google Sheets)
+        async function apiCall(action, params = {}) {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: action, ...params })
+                });
+                return await response.json();
+            } catch (error) { return { status: 'error' }; }
+        }
+
+        function togglePassword() {
+            const pInput = document.getElementById('password');
+            const icon = document.getElementById('toggleIcon');
+            if (pInput.type === 'password') { pInput.type = 'text'; icon.textContent = 'visibility'; } 
+            else { pInput.type = 'password'; icon.textContent = 'visibility_off'; }
+        }
+
+        // =======================================
+        // MOTOR DE CÁMARA (El que no se bloquea)
+        // =======================================
+        function startScanner() {
+            const config = { fps: 10, qrbox: { width: 220, height: 220 } };
+            html5QrCode = new Html5Qrcode("reader");
+            
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
+            .catch(function(err) {
+                // Si está en laptop y no hay cámara trasera, abre la webcam frontal
+                html5QrCode.start({ facingMode: "user" }, config, onScanSuccess)
+                .catch(e => {
+                    document.getElementById('resBranch').innerHTML = '<span class="text-red-600">Active los permisos de cámara del navegador.</span>';
+                });
+            });
+        }
+
+        async function onScanSuccess(decodedText) {
+            if (escaneoBloqueado || isBranchScanned) return; 
+            escaneoBloqueado = true;
+            
+            document.getElementById('resBranch').innerHTML = '<span class="animate-pulse">Validando QR en Base de Datos...</span>';
+            
+            const r = await apiCall('getBranchFromCatalog', { qrContent: decodedText });
+            
+            if(r.status === 'success') {
+                document.getElementById('resBranch').innerText = r.branchName;
+                isBranchScanned = true;
+                validarBoton();
+                if(globalFolio !== "") apiCall('updateFolioBranch', { folio: globalFolio, branchName: r.branchName });
+                
+                // Mantenemos la cámara prendida como pediste, pero ya no busca más
+            } else {
+                document.getElementById('resBranch').innerHTML = '<span class="text-red-600">QR No Reconocido. Apunte a otro código.</span>';
+                setTimeout(() => { escaneoBloqueado = false; }, 2500); // 2.5 seg de castigo y vuelve a intentar
+            }
+        }
+
+        // Validar que haya Sucursal + Opción seleccionada para prender el botón
+        function validarBoton() {
+            const btn = document.getElementById('btnContinuar');
+            const option = document.getElementById('optionSelect').value;
+            if(isBranchScanned && option !== '') {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                btn.classList.add('shadow-lg');
+            } else {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+                btn.classList.remove('shadow-lg');
+            }
+        }
+        document.getElementById('optionSelect').addEventListener('change', validarBoton);
+
+        // =======================================
+        // PROCESO DE LOGIN Y TRANSICIÓN
+        // =======================================
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const btn = document.getElementById('submitBtn');
+            const alertMsg = document.getElementById('alertMessage');
+            const u = document.getElementById('username').value.trim().toUpperCase();
+            const p = document.getElementById('password').value;
+
+            alertMsg.classList.add('hidden');
+            btn.innerText = 'VERIFICANDO...';
+            btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+
+            // 1. TRANSICIÓN INMEDIATA PARA ENGAÑAR AL NAVEGADOR
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('mainMenu').classList.remove('hidden');
+            document.getElementById('mainMenu').classList.add('block');
+            
+            // 2. ARRANCA LA CÁMARA (El celular da permiso porque es acción instantánea del clic)
+            startScanner();
+
+            // 3. CONSULTA LA BASE DE DATOS EN EL FONDO
+            const res = await apiCall('getEmployeeData', { employeeNumber: u });
+
+            if (res.status === 'success' && p === res.password) {
+                // Usuario correcto
+                document.getElementById('resName').innerText = res.name;
+                document.getElementById('resPos').innerText = res.position;
+                
+                // Pedir el Folio Nuevo
+                const folioData = await apiCall('getNextFolio', { userName: res.name });
+                globalFolio = folioData.folio;
+                document.getElementById('folioDisp').innerText = globalFolio;
+
+            } else {
+                // Error: Apagar cámara y regresar a la pantalla 1
+                if (html5QrCode && html5QrCode.isScanning) {
+                    html5QrCode.stop().catch(err => console.log(err));
+                }
+                document.getElementById('mainMenu').classList.add('hidden');
+                document.getElementById('mainMenu').classList.remove('block');
+                document.getElementById('loginSection').style.display = 'block';
+                
+                alertMsg.innerText = "Credenciales incorrectas.";
+                alertMsg.classList.remove('hidden');
+                btn.innerText = 'INICIAR SESIÓN';
+                btn.disabled = false;
+                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+            }
+        });
+
+        // =======================================
+        // BOTÓN FINAL -> REDIRECCIÓN AL FORMS
+        // =======================================
+        document.getElementById('btnContinuar').onclick = function() {
+            const opcionSeleccionada = document.getElementById('optionSelect').value;
+            // Abre el formulario de Google correspondiente en la misma pestaña
+            window.top.location.href = URL_MAP[opcionSeleccionada];
+        };
+    </script>
+</body>
+</html>
