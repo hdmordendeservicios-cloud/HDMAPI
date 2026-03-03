@@ -17,6 +17,7 @@
                         primary: "#005B9A", 
                         "primary-dark": "#004575",
                         "surface": "#FFFFFF",
+                        "background": "#F8FAFC",
                         "text-main": "#1E293B",
                         "text-sub": "#64748B",
                     },
@@ -28,106 +29,98 @@
     </script>
     <style>
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0084CA 0%, #005B9A 100%); background-attachment: fixed; }
-        /* Ajuste de cámara para que no desborde en Tailwind */
         #reader { width: 100%; border-radius: 0.5rem; overflow: hidden; border: 2px solid #e2e8f0; }
         #reader video { object-fit: cover; border-radius: 0.5rem; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center py-8 px-4 antialiased">
+<body class="min-h-screen flex flex-col items-center justify-center p-4 antialiased">
     
-    <div class="w-full max-w-[420px] bg-surface rounded-2xl shadow-premium overflow-hidden">
+    <div class="w-full max-w-[420px] bg-surface rounded-2xl shadow-premium border border-slate-100 overflow-hidden">
         <div class="p-8">
-            <div class="flex flex-col items-center mb-6">
-                <img src="https://i.ibb.co/rCsz6hh/LOGOTIPO.png" alt="Logo HDM" class="mb-4 object-contain h-20"> 
-                <h1 class="text-2xl font-semibold text-text-main tracking-tight">Portal Operativo</h1>
-                <p class="text-[13px] text-text-sub mt-1 text-center">Sistemas de Filtración de Agua SA. de C.V.</p>
+            <div class="flex flex-col items-center mb-4">
+                <img src="https://i.ibb.co/rCsz6hh/LOGOTIPO.png" alt="Logo HDM" class="mb-5 object-contain" style="height: 7.2rem;"> 
+                <h1 class="text-2xl font-semibold text-text-main tracking-tight">Bienvenido</h1>
+                <p class="text-[15px] text-text-sub mt-1 text-center">Sistemas de Filtración de Agua SA. de C.V.</p>
             </div>
             
-            <div id="loginSection">
-                <form id="loginForm" class="space-y-5">
-                    <div class="space-y-1.5">
-                        <label class="text-[13px] font-medium text-slate-700 ml-0.5">Número de Empleado</label>
-                        <div class="relative flex items-center">
-                            <span class="material-symbols-outlined absolute left-4 text-slate-400 text-xl">badge</span>
-                            <input required id="username" class="block w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-text-main focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="Ej. EJBM" type="text" style="text-transform: uppercase;">
-                        </div>
-                    </div>
-                    
-                    <div class="space-y-1.5">
-                        <label class="text-[13px] font-medium text-slate-700 ml-0.5">Contraseña</label>
-                        <div class="relative flex items-center">
-                            <span class="material-symbols-outlined absolute left-4 text-slate-400 text-xl">lock</span>
-                            <input required id="password" class="block w-full pl-12 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-lg text-text-main focus:ring-2 focus:ring-primary focus:border-primary text-sm" placeholder="••••••••" type="password">
-                            <button class="absolute right-4 flex items-center text-slate-400 hover:text-primary transition-colors" onclick="togglePassword()" type="button">
-                                <span class="material-symbols-outlined text-xl" id="toggleIcon">visibility_off</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="alertMessage" class="hidden py-2 px-3 bg-red-50 border border-red-200 text-red-600 text-sm font-medium rounded-lg text-center"></div>
-                    
-                    <button id="submitBtn" class="w-full py-3.5 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary-dark transition-all shadow-md active:scale-95" type="submit">
-                        INICIAR SESIÓN
-                    </button>
-                </form>
-            </div>
-
-            <div id="mainMenu" class="hidden animate-fade-in space-y-5">
-                
-                <div class="bg-slate-50 border-l-4 border-primary p-4 rounded-r-lg shadow-sm">
-                    <p class="text-xs font-bold text-primary tracking-wider mb-1">USUARIO</p>
-                    <p id="resName" class="text-sm font-semibold text-text-main leading-tight">Cargando...</p>
-                    <p id="resPos" class="text-xs font-medium text-slate-500 mt-1">---</p>
-                </div>
-
-                <div class="bg-blue-50 border border-primary p-4 rounded-lg text-center shadow-inner">
-                    <p class="text-xs font-bold text-primary tracking-wider mb-1">FOLIO GENERADO</p>
-                    <p id="folioDisp" class="text-2xl font-extrabold text-primary tracking-widest">Generando...</p>
-                </div>
-
-                <div class="bg-emerald-50 border-l-4 border-emerald-500 p-4 rounded-r-lg shadow-sm">
-                    <p class="text-xs font-bold text-emerald-600 tracking-wider mb-1">SUCURSAL DETECTADA</p>
-                    <p id="resBranch" class="text-sm font-bold text-emerald-800">Escaneando...</p>
-                </div>
-
-                <div id="readerWrapper" class="w-full relative shadow-md rounded-lg overflow-hidden">
-                    <div id="reader"></div>
-                </div>
-
-                <div class="space-y-2 mt-4 border-t border-slate-100 pt-4">
-                    <label class="text-[13px] font-semibold text-slate-700">Tipo de Servicio</label>
+            <form id="loginForm" class="space-y-5 block">
+                <div class="space-y-1.5">
+                    <label class="text-[13px] font-medium text-slate-700 ml-0.5" for="username">Usuario</label>
                     <div class="relative flex items-center">
-                        <span class="material-symbols-outlined absolute left-4 text-primary text-xl z-10">build</span>
-                        <select id="optionSelect" class="block w-full pl-12 pr-10 py-3 bg-white border border-slate-200 rounded-lg text-sm text-text-main font-medium focus:ring-2 focus:ring-primary focus:border-primary appearance-none cursor-pointer">
-                            <option value="">-- SELECCIONE UNA OPCIÓN --</option>
-                            <option value="ServicioCorrectivo">Orden Correctivo/Emergencia</option>
-                            <option value="ServicioInstalaciones">Orden Instalaciones</option>
-                            <option value="ServicioMantenimiento">Orden Mantenimiento</option>
-                            <option value="ServicioReporteVisita">Reporte de Visita</option>
-                        </select>
-                        <span class="material-symbols-outlined absolute right-4 text-slate-400 text-xl pointer-events-none">expand_more</span>
+                        <span class="material-symbols-outlined absolute left-4 text-slate-400 text-xl">person</span>
+                        <input required autocomplete="username" class="block w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-lg text-text-main placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all text-sm uppercase" id="username" placeholder="ID" type="text">
+                    </div>
+                </div>
+                
+                <div class="space-y-1.5">
+                    <label class="text-[13px] font-medium text-slate-700 ml-0.5" for="password">Contraseña</label>
+                    <div class="relative flex items-center">
+                        <span class="material-symbols-outlined absolute left-4 text-slate-400 text-xl">lock</span>
+                        <input required autocomplete="current-password" class="block w-full pl-12 pr-12 py-3 bg-white border border-slate-200 rounded-lg text-text-main placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all text-sm" id="password" placeholder="••••••••" type="password">
+                        <button class="absolute right-4 flex items-center text-slate-400 hover:text-primary transition-colors" onclick="togglePassword()" type="button">
+                            <span class="material-symbols-outlined text-xl" id="toggleIcon">visibility_off</span>
+                        </button>
                     </div>
                 </div>
 
-                <button id="btnContinuar" class="w-full py-3.5 mt-2 rounded-lg text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-all opacity-50 cursor-not-allowed" disabled>
-                    CONTINUAR AL FORMULARIO
-                </button>
+                <div id="alertMessage" class="hidden py-2.5 px-3 bg-red-50 border border-red-200 text-red-600 text-[13px] font-medium rounded-lg text-center transition-all"></div>
                 
+                <button id="submitBtn" class="w-full flex justify-center items-center py-3.5 px-4 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary-dark shadow-sm transition-all active:scale-[0.98]" type="submit">
+                    Iniciar Sesión
+                </button>
+            </form>
+
+            <div id="mainMenu" class="hidden space-y-5 animate-fade-in mt-4">
+                
+                <div class="bg-slate-50 border-l-4 border-primary p-3 rounded-r-lg shadow-sm flex flex-col">
+                    <span class="text-[10px] font-bold text-primary tracking-wider uppercase">Usuario:</span>
+                    <span id="resName" class="text-sm font-semibold text-text-main">Cargando...</span>
+                    <span class="text-[10px] font-bold text-primary tracking-wider uppercase mt-2">Cargo:</span>
+                    <span id="resPos" class="text-xs font-medium text-slate-500">---</span>
+                </div>
+
+                <div class="bg-blue-50 border border-primary/20 p-3 rounded-lg text-center shadow-inner">
+                    <p class="text-[11px] font-bold text-primary tracking-wider mb-1 uppercase">Folio Generado</p>
+                    <p id="folioDisp" class="text-xl font-extrabold text-primary tracking-widest">Generando...</p>
+                </div>
+
+                <div class="bg-[#f0fdf4] border-l-4 border-[#16a34a] p-3 rounded-r-lg shadow-sm">
+                    <p class="text-[11px] font-bold text-[#16a34a] tracking-wider mb-1 uppercase">Sucursal Detectada:</p>
+                    <p id="resBranch" class="text-sm font-bold text-[#15803d]">ESPERANDO ESCANEO...</p>
+                </div>
+
+                <div id="reader" class="shadow-sm"></div>
+
+                <div class="space-y-2 pt-2 border-t border-slate-100">
+                    <label class="text-[13px] font-semibold text-slate-700">Seleccione Servicio:</label>
+                    <select id="optionSelect" class="block w-full py-3 px-4 bg-white border border-slate-200 rounded-lg text-sm text-text-main font-medium focus:ring-2 focus:ring-primary focus:border-primary">
+                        <option value="">-- SELECCIONAR --</option>
+                        <option value="ServicioCorrectivo">Orden de Servicio Correctivo</option>
+                        <option value="ServicioInstalaciones">Orden de Servicio Instalaciones</option>
+                        <option value="ServicioMantenimiento">Orden de Servicio Mantenimiento</option>
+                        <option value="ServicioReporteVisita">Orden de Servicio Reporte de Visita</option>
+                    </select>
+                </div>
+
+                <button id="btnContinuar" class="w-full py-3.5 mt-2 rounded-lg text-sm font-semibold text-white bg-[#16a34a] hover:bg-[#15803d] transition-all opacity-50 cursor-not-allowed" disabled>
+                    CONTINUAR
+                </button>
             </div>
+            
         </div>
     </div>
     
     <div class="mt-6 text-center">
-        <p class="text-[11px] font-medium uppercase tracking-widest text-white/70 drop-shadow-md">
+        <p class="text-[12px] font-medium uppercase tracking-widest text-white/60">
             © 2026 HDM MÉXICO. Todos los derechos reservados.
         </p>
     </div>
 
     <script>
         // ======================================================================
-        // 🔴🔴 PEGA AQUÍ TU NUEVO ENLACE DE GOOGLE APPS SCRIPT (Termina en /exec)
+        // 🔴 PEGA AQUÍ TU ENLACE DE GOOGLE APPS SCRIPT (El que termina en /exec)
         // ======================================================================
-        const API_URL = "https://script.google.com/macros/s/AKfycbxuZRXtZTCBE3bK-LX-BHlCZxeI21psb8lGMxPQZwJMujQqtd3T7J6j2tNe4MatWfa-2A/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbxbjed8pi9TohcQ8_mkUn5GW6M89HqNN0dhfZo5XnVXwp1STyA3Pv4aFczQAUk8XYkjbA/exec";
 
         let html5QrCode;
         let globalFolio = "";
@@ -141,7 +134,7 @@
             'ServicioReporteVisita': 'https://docs.google.com/forms/d/e/1FAIpQLSfj6ZjnKHhc3h-HGGj2q7HcRTuYOcLvQnMws8K3998V5hh_cQ/viewform?usp=pp_url&entry.1483243805=RTDV-'
         };
 
-        // Función puente para comunicarse con el Backend (Google Sheets)
+        // Función API universal
         async function apiCall(action, params = {}) {
             try {
                 const response = await fetch(API_URL, {
@@ -154,26 +147,21 @@
         }
 
         function togglePassword() {
-            const pInput = document.getElementById('password');
-            const icon = document.getElementById('toggleIcon');
-            if (pInput.type === 'password') { pInput.type = 'text'; icon.textContent = 'visibility'; } 
-            else { pInput.type = 'password'; icon.textContent = 'visibility_off'; }
+            const p = document.getElementById('password');
+            const i = document.getElementById('toggleIcon');
+            if (p.type === 'password') { p.type = 'text'; i.textContent = 'visibility'; } 
+            else { p.type = 'password'; i.textContent = 'visibility_off'; }
         }
 
-        // =======================================
-        // MOTOR DE CÁMARA (El que no se bloquea)
-        // =======================================
+        // MOTOR DE CÁMARA SILENCIOSO
         function startScanner() {
             const config = { fps: 10, qrbox: { width: 220, height: 220 } };
             html5QrCode = new Html5Qrcode("reader");
             
             html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
-            .catch(function(err) {
-                // Si está en laptop y no hay cámara trasera, abre la webcam frontal
+            .catch(function() {
                 html5QrCode.start({ facingMode: "user" }, config, onScanSuccess)
-                .catch(e => {
-                    document.getElementById('resBranch').innerHTML = '<span class="text-red-600">Active los permisos de cámara del navegador.</span>';
-                });
+                .catch(e => console.log("Cámara denegada", e));
             });
         }
 
@@ -181,7 +169,7 @@
             if (escaneoBloqueado || isBranchScanned) return; 
             escaneoBloqueado = true;
             
-            document.getElementById('resBranch').innerHTML = '<span class="animate-pulse">Validando QR en Base de Datos...</span>';
+            document.getElementById('resBranch').innerHTML = '<span class="animate-pulse text-primary">Buscando Sucursal...</span>';
             
             const r = await apiCall('getBranchFromCatalog', { qrContent: decodedText });
             
@@ -189,76 +177,69 @@
                 document.getElementById('resBranch').innerText = r.branchName;
                 isBranchScanned = true;
                 validarBoton();
-                if(globalFolio !== "") apiCall('updateFolioBranch', { folio: globalFolio, branchName: r.branchName });
-                
-                // Mantenemos la cámara prendida como pediste, pero ya no busca más
+                if(globalFolio) apiCall('updateFolioBranch', { folio: globalFolio, branchName: r.branchName });
             } else {
-                document.getElementById('resBranch').innerHTML = '<span class="text-red-600">QR No Reconocido. Apunte a otro código.</span>';
-                setTimeout(() => { escaneoBloqueado = false; }, 2500); // 2.5 seg de castigo y vuelve a intentar
+                document.getElementById('resBranch').innerHTML = '<span class="text-red-600">QR No Reconocido.</span>';
+                setTimeout(() => { escaneoBloqueado = false; }, 2000); // 2 segundos de respiro
             }
         }
 
-        // Validar que haya Sucursal + Opción seleccionada para prender el botón
         function validarBoton() {
             const btn = document.getElementById('btnContinuar');
-            const option = document.getElementById('optionSelect').value;
-            if(isBranchScanned && option !== '') {
+            if(isBranchScanned && document.getElementById('optionSelect').value !== '') {
                 btn.disabled = false;
                 btn.classList.remove('opacity-50', 'cursor-not-allowed');
                 btn.classList.add('shadow-lg');
             } else {
                 btn.disabled = true;
                 btn.classList.add('opacity-50', 'cursor-not-allowed');
-                btn.classList.remove('shadow-lg');
             }
         }
         document.getElementById('optionSelect').addEventListener('change', validarBoton);
 
-        // =======================================
-        // PROCESO DE LOGIN Y TRANSICIÓN
-        // =======================================
+        // LOGIN Y TRANSICIÓN
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const btn = document.getElementById('submitBtn');
             const alertMsg = document.getElementById('alertMessage');
-            const u = document.getElementById('username').value.trim().toUpperCase();
-            const p = document.getElementById('password').value;
+            const u = document.getElementById('username').value.trim();
+            const p = document.getElementById('password').value.trim();
 
             alertMsg.classList.add('hidden');
             btn.innerText = 'VERIFICANDO...';
             btn.disabled = true;
             btn.classList.add('opacity-75', 'cursor-not-allowed');
 
-            // 1. TRANSICIÓN INMEDIATA PARA ENGAÑAR AL NAVEGADOR
-            document.getElementById('loginSection').style.display = 'none';
+            // 1. TRANSICIÓN INSTANTÁNEA (Engaña al navegador)
+            document.getElementById('loginForm').style.display = 'none';
             document.getElementById('mainMenu').classList.remove('hidden');
-            document.getElementById('mainMenu').classList.add('block');
             
-            // 2. ARRANCA LA CÁMARA (El celular da permiso porque es acción instantánea del clic)
+            // 2. ARRANCA LA CÁMARA AL INSTANTE DEL CLIC
             startScanner();
 
-            // 3. CONSULTA LA BASE DE DATOS EN EL FONDO
-            const res = await apiCall('getEmployeeData', { employeeNumber: u });
+            // 3. REVISA EN SEGUNDO PLANO
+            const res = await apiCall('getEmployeeData', { username: u, password: p });
 
-            if (res.status === 'success' && p === res.password) {
+            if (res.status === 'success' && res.esValido) {
                 // Usuario correcto
                 document.getElementById('resName').innerText = res.name;
                 document.getElementById('resPos').innerText = res.position;
                 
-                // Pedir el Folio Nuevo
+                // Pedir Folio Nuevo
                 const folioData = await apiCall('getNextFolio', { userName: res.name });
-                globalFolio = folioData.folio;
-                document.getElementById('folioDisp').innerText = globalFolio;
-
-            } else {
-                // Error: Apagar cámara y regresar a la pantalla 1
-                if (html5QrCode && html5QrCode.isScanning) {
-                    html5QrCode.stop().catch(err => console.log(err));
+                if (folioData.status === 'success') {
+                    globalFolio = folioData.folio;
+                    document.getElementById('folioDisp').innerText = globalFolio;
+                    if(isBranchScanned) { // Si escaneó rapidísimo
+                        apiCall('updateFolioBranch', { folio: globalFolio, branchName: document.getElementById('resBranch').innerText });
+                    }
                 }
+            } else {
+                // Si falla la contraseña, se apaga todo y regresa
+                if (html5QrCode && html5QrCode.isScanning) html5QrCode.stop().catch(e=>e);
                 document.getElementById('mainMenu').classList.add('hidden');
-                document.getElementById('mainMenu').classList.remove('block');
-                document.getElementById('loginSection').style.display = 'block';
+                document.getElementById('loginForm').style.display = 'block';
                 
                 alertMsg.innerText = "Credenciales incorrectas.";
                 alertMsg.classList.remove('hidden');
@@ -268,13 +249,10 @@
             }
         });
 
-        // =======================================
-        // BOTÓN FINAL -> REDIRECCIÓN AL FORMS
-        // =======================================
+        // BOTÓN FINAL REDIRECCIÓN
         document.getElementById('btnContinuar').onclick = function() {
-            const opcionSeleccionada = document.getElementById('optionSelect').value;
-            // Abre el formulario de Google correspondiente en la misma pestaña
-            window.top.location.href = URL_MAP[opcionSeleccionada];
+            const opcion = document.getElementById('optionSelect').value;
+            window.top.location.href = URL_MAP[opcion];
         };
     </script>
 </body>
